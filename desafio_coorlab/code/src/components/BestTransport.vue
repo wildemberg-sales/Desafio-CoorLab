@@ -34,7 +34,50 @@
         </div>
 
         <div class="response">
+          <div class="msg-no-select">Nenhum dado selecionado</div>
+
+          <div class="msg-select">
+            <div class="center">
+            <p>Estas são as melhores alternativas de frete que encontramos para você.</p>
+
+            <div class="block-info-minor">
+              <div class="block-info-img">
+                <img src="./../assets/logo.png"/>
+              </div>
+              <div class="block-info-data">
+                <p><span>Frete com menor valor</span><br/>
+                  Transportadora: blabla <br/>
+                  Tempo estimado: 12h
+                </p>
+              </div>
+              <div class="block-info-price">
+                <p><span>Preço</span><br/>
+                  R$ 20,00
+                </p>
+              </div>
+            </div>
+
+            <div class="block-info-fast">
+              <div class="block-info-img">
+                <img src="./../assets/logo.png"/>
+              </div>
+              <div class="block-info-data">
+                <p><span>Frete mais rápido</span><br/>
+                  Transportadora: blabla <br/>
+                  Tempo estimado: 12h 
+                </p>
+                
+              </div>
+              <div class="block-info-price">
+                <p><span>Preço</span><br/>
+                  R$ 20,00
+                </p>
+              </div>
+            </div>
+            
+            </div>
           
+          </div>
         
         </div>
 
@@ -175,5 +218,50 @@ select{
   justify-content: center;
   align-items: center;
 }
+.response span{
+  font-weight: bold;
+}
 
+.msg-no-select{
+  display: none;
+  font-size: 30px;
+  font-weight: bold;
+  color: #817f7f;
+}
+
+.msg-select{
+  border: 1px solid;
+  width: 80%;
+  padding: 20px;
+}
+
+.center{
+  
+}
+.block-info-minor, .block-info-fast{
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.block-info-img{
+  padding: 10px 20px;
+  background-color: #00aca6;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.block-info-data{
+  padding: 0 20px;
+  width: 40%;
+  background-color: #ccc;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.block-info-price{
+  margin-left: 10px;
+  background-color: #ccc;
+  border-radius: 5px;
+  padding: 10px 40px 10px 20px;
+}
 </style>
