@@ -16,11 +16,11 @@
         </div>
 
         <div class="block-info-price">
-            <p v-if="preco<=100"><span>Preço</span><br/>
-                {{ preco.cost_transport_light}}
+            <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
+                R$ {{ parseFloat(precoFloatMVL * pesoInt).toFixed(2)}}
             </p>
             <p v-else><span>Preço</span><br/>
-                {{ preco.cost_transport_heavy}}
+                R$ {{ parseFloat(precoFloatMVH * pesoInt).toFixed(2)}}
             </p>
         </div>
 
@@ -40,11 +40,11 @@
         </div>
 
         <div class="block-info-price">
-            <p v-if="preco<=100"><span>Preço</span><br/>
-                {{ tempo.cost_transport_light }}
+            <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
+                R$ {{ parseFloat(precoFloatTL * pesoInt).toFixed(2) }}
             </p>
             <p v-else><span>Preço</span><br/>
-                {{ tempo.cost_transport_heavy }}
+                R$ {{ parseFloat(precoFloatTH * pesoInt).toFixed(2) }}
             </p>
         </div>
         
@@ -53,14 +53,28 @@
     </div><!--center-->
 </template>
 <script>
+
+    import {convertFloat} from './BestTransport.vue'
+
+
     export default {
         name: "ResponseMsg",
         props:{
             preco:{type: Object},
             tempo:{type:Object},
-            peso:Number
+            peso:String
         },
+        data(){
+            return{
+                pesoInt: parseInt(this.peso),
+                precoFloatMVL: convertFloat(this.preco.cost_transport_light),
+                precoFloatMVH: convertFloat(this.preco.cost_transport_heavy),
+                precoFloatTL: convertFloat(this.tempo.cost_transport_light),
+                precoFloatTH: convertFloat(this.tempo.cost_transport_heavy)
+            }
+        }
     }
+    
     
 </script>
 <style>
