@@ -1,6 +1,5 @@
 <template>
   <div>
-   
     <div class="title">
       <b-navbar toggleable="lg" type="dark" variant="info">
         <b-navbar-brand class="ml-2">
@@ -23,74 +22,28 @@
           <div class="form-inputs">
 
             <label>Destino</label>
-              <select name="estado" id="input-estado">
-                <option value="">Selecione o destino</option>
+              <select name="estado" id="input-estado" v-model="citySelected">
+                <option value="" default>Selecione o destino</option>
+                <option v-for="(obj) in cities" v-bind:key="obj.id" :value="obj">{{ obj }}</option>
               </select>
             
             <label for="input-peso">Peso</label>
-              <input type="number" placeholder="Peso da carga em Kg" id="input-peso"/>
+              <input type="number" placeholder="Peso da carga em Kg" id="input-peso" v-model="peso"/>
             
           </div><!--form-inputs - bloco onde ficam os inputs-->
 
-          <button>Analisar</button>
+          <button @click="analisar">Analisar</button>
           
         </div><!--content-form - bloco onde fica o formulário-->
 
         <div class="response">
-          <div class="msg-no-select">Nenhum dado selecionado</div><!--msg-no-select-->
 
-          <div class="msg-select">
-            <div class="center">
-              <p>Estas são as melhores alternativas de frete que encontramos para você.</p>
-
-              <div class="block-info-minor">
-
-                <div class="block-info-img">
-                  <img src="./../assets/iconHand.png"/>
-                </div>
-
-                <div class="block-info-data">
-                  <p><span>Frete com menor valor</span><br/>
-                    Transportadora: blabla <br/>
-                    Tempo estimado: 12h
-                  </p>
-                </div>
-
-                <div class="block-info-price">
-                  <p><span>Preço</span><br/>
-                    R$ 200000,00
-                  </p>
-                </div>
-
-              </div><!--block-info-minor - bloco para mostrar o menor preço-->
-
-              <div class="block-info-fast">
-
-                <div class="block-info-img">
-                  <img src="./../assets/iconTime.png"/>
-                </div>
-
-                <div class="block-info-data">
-                  <p><span>Frete mais rápido</span><br/>
-                    Transportadora: blabla <br/>
-                    Tempo estimado: 12h 
-                  </p>
-                </div>
-
-                <div class="block-info-price">
-                  <p><span>Preço</span><br/>
-                    R$ 20000,00
-                  </p>
-                </div>
-                
-              </div><!--block-info-fast - bloco para mostrar o mais rápido-->
-              
-              <button>Limpar</button>
-
-            </div><!--center-->
-          
+          <div class="msg-select" v-if="showResponse" >
+            <ResponseMsg :preco="menorPreco" :tempo="menorTempo" :peso="peso"/>
           </div><!--msg-select - mensagem de retorno quando os dados forem analisados-->
         
+          <div class="msg-no-select" v-else>Nenhum dado selecionado</div><!--msg-no-select-->
+
         </div><!--response - bloco de resposta-->
 
       
@@ -112,34 +65,137 @@
 
 </template>
 
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <script>
 import {
   BNavbar,
   BNavbarBrand,
 } from 'bootstrap-vue'
+import ResponseMsg from './ResponseMsg.vue'
+
+const axios = require('axios').default;
+
+function convertFloat(val) {
+  // Remove o símbolo de R$ e quaisquer espaços em branco
+  const valorSemSimbolo = val.replace(/R\$\s*/g, '');
+  const valorFloat = parseFloat(valorSemSimbolo);
+
+  return valorFloat;
+}
+
+function retiraH(val) {
+  const valorSemH = val.slice(0, -1);
+  const valorInteiro = parseInt(valorSemH);
+
+  return valorInteiro;
+}
 
 export default {
   components: {
     BNavbar,
     BNavbarBrand,
+    ResponseMsg
   },
   data() {
     const appName = ''
-
+    const data = []
+    const cities = []
+    const citySelected = ""
+    const peso = 0
+    const menorPreco = {}
+    const menorTempo = {}
+    const showResponse = false
     return {
       appName,
+      data,
+      cities,
+      citySelected,
+      peso,
+      menorPreco,
+      menorTempo,
+      showResponse
     }
   },
   created() {
     // Implemente aqui o GET dos dados da API REST
     // para que isso ocorra na inicialização da pagina
     this.appName = 'Melhor Frete'
+
+    axios.get('http://localhost:3000/transport')
+    .then((res)=>{
+      this.data = res.data;
+      console.log(this.data);
+      this.filterCities(res.data);
+    })
+    .catch(error => {console.log(error)})
+
   },
   methods: {
     // Implemente aqui os metodos utilizados na pagina
-    methodFoo() {
-      console.log(this.appName)
+
+    filterCities(val){
+      let array = []
+      val.map((value)=>{
+        if(array.indexOf(value.city) == -1){
+          array.push(value.city)
+        }
+      })
+      this.cities = [...array];
+      console.log(this.cities);
     },
+    
+    analisar(){
+      let menorValor = {name: "a",
+                        cost_transport_light: "R$ 999.00",
+                        cost_transport_heavy: "R$ 999.00",
+                        city: "a",
+                        lead_time: "999h"};
+      let menorTempo = {name: "a",
+                        cost_transport_light: "R$ 999.00",
+                        cost_transport_heavy: "R$ 999.00",
+                        city: "a",
+                        lead_time: "999h"};
+
+      this.data.map(val=>{
+
+        if(this.citySelected == val.city){
+
+          //verifica o menor preço baseado no peso
+          if(this.peso <= 100){
+            let value_light = convertFloat(val.cost_transport_light);
+            let menorVal_light = convertFloat(menorValor.cost_transport_light)
+
+            if(value_light < menorVal_light){
+              menorValor = val;
+            }
+
+          }else if(this.peso > 100){
+            let value_heavy = convertFloat(val.cost_transport_heavy);
+            let menorVal_heavy = convertFloat(menorValor.cost_transport_heavy)
+
+            if(value_heavy < menorVal_heavy){
+              menorValor = val;
+            }
+
+          }
+          
+          //Verifica o menor tempo
+          let valH = retiraH(val.lead_time);
+          let menorValH = retiraH(menorTempo.lead_time);
+          if(valH < menorValH){
+            menorTempo = val;
+          }
+
+        }
+        
+      })
+
+      this.menorPreco = menorValor;
+      this.menorTempo = menorTempo;
+
+      this.showResponse = true;
+    }
   },
 }
 </script>
@@ -249,56 +305,18 @@ select{
 }
 
 .msg-no-select{
-  display: none;
+  display: block;
   font-size: 30px;
   font-weight: bold;
   color: #817f7f;
+  transition: 1s;
 }
 
 .msg-select{
   width: 100%;
   height: 100%;
   padding: 20px;
-}
-
-.center{
-  text-align: center;
-}
-
-.block-info-minor, .block-info-fast{
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-.block-info-img{
-  padding: 20px 20px;
-  background-color: #00aca6;
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 5px;
-}
-
-.block-info-data{
-  padding: 0 20px;
-  width: 40%;
-  background-color: #dfdede;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
-}
-
-.block-info-price{
-  width: 200px;
-  margin-left: 10px;
-  background-color: #dfdede;
-  border-radius: 5px;
-  padding: 10px 20px;
-}
-
-.msg-select button{
-  position: fixed;
-  bottom: 150px;
-  right: 100px;
+  transition: 1s;
 }
 
 .overlay-modal{
