@@ -9,7 +9,7 @@
         </div>
 
         <div class="block-info-data">
-            <p><span>Frete com menor valor</span><br/>
+            <p><span><b>Frete com menor valor</b></span><br/>
             Transportadora: {{ preco.name }}<br/>
             Tempo estimado: {{ preco.lead_time }}
             </p>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="block-info-data">
-            <p><span>Frete mais rápido</span><br/>
+            <p><span><b>Frete mais rápido</b></span><br/>
             Transportadora: {{tempo.name}} <br/>
             Tempo estimado: {{ tempo.lead_time }} 
             </p>

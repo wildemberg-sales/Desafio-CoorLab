@@ -28,7 +28,7 @@
               </select>
             
             <label for="input-peso">Peso</label>
-              <input type="number" placeholder="Peso da carga em Kg" id="input-peso" v-model="peso"/>
+              <input type="number" placeholder="Peso da carga em Kg" id="input-peso" v-model="peso" min="0"/>
             
           </div><!--form-inputs - bloco onde ficam os inputs-->
 
@@ -110,7 +110,7 @@ export default {
     const data = []
     const cities = []
     const citySelected = ""
-    const peso = 0
+    const peso =""
     const menorPreco = {}
     const menorTempo = {}
     const showResponse = false
@@ -197,7 +197,7 @@ export default {
             //Verifica o menor tempo
             let valH = retiraH(val.lead_time);
             let menorValH = retiraH(menorTempo.lead_time);
-            if(valH < menorValH){
+            if(valH <= menorValH){
               menorTempo = val;
             }
 
@@ -221,7 +221,7 @@ export default {
     clearValues(){
       this.menorPreco = {}
       this.menorTempo = {}
-      this.peso = 0
+      this.peso = ""
       this.citySelected = ""
       this.showResponse = false
       document.getElementById("box-button-clear").style.display = "none";
@@ -285,6 +285,9 @@ export default {
 .title-form{
   font-weight: bold;
   font-size: 20px;
+}
+.title-form img{
+  width: 70px;
 }
 
 .form-inputs{
