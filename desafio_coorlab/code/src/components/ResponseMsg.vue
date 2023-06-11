@@ -1,6 +1,6 @@
 <template>
     <div class="center">
-        <p>Estas são as melhores alternativas de frete que encontramos para você.</p>
+        <h2>Estas são as melhores alternativas de frete que encontramos para você.</h2>
 
         <div class="block-info-minor">
 
@@ -79,7 +79,12 @@
 </script>
 <style>
 .center{
-  text-align: center;
+    padding-top: 60px;
+    text-align: center;
+}
+
+.center h2{
+    margin-bottom: 50px;
 }
 
 .block-info-minor, .block-info-fast{

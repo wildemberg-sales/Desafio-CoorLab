@@ -36,7 +36,8 @@
           
         </div><!--content-form - bloco onde fica o formulário-->
 
-        <div class="response">
+        <div class="box-response">
+          <div class="response">
 
           <div class="msg-select" v-if="showResponse" >
             <ResponseMsg :preco="menorPreco" :tempo="menorTempo" :peso="peso"/>
@@ -44,20 +45,27 @@
         
           <div class="msg-no-select" v-else>Nenhum dado selecionado</div><!--msg-no-select-->
 
-        </div><!--response - bloco de resposta-->
+          </div><!--response - bloco de resposta-->
 
-      
+          <div class="box-button-clear" id="box-button-clear">
+            <button class="button-clear" @click="clearValues">Limpar</button>
+          </div><!--box-button-clear - Utilizado para limpar os valores-->
+
+        </div>
+        
+
+        
       </div><!--content - bloco onde fica todos os conteúdos-->
       
     </div><!--block - bloco onde irá ficar os conteúdos e formulários-->
      
-    <div class="overlay-modal">
+    <div class="overlay-modal" id="overlay">
       <div class="modal-box">
         <div class="modal-img">
           <img src="./../assets/iconErro.png"/>
         </div>
         <p>Insira os valores para realizar a análise.</p>
-        <button>Fechar</button>
+        <button @click="closeOverlay">Fechar</button>
       </div><!--modal-box - modal de erro-->
     </div><!--overlay-modal - overlay para inserção do modal de erro-->
 
@@ -76,7 +84,7 @@ import ResponseMsg from './ResponseMsg.vue'
 
 const axios = require('axios').default;
 
-function convertFloat(val) {
+export function convertFloat(val) {
   // Remove o símbolo de R$ e quaisquer espaços em branco
   const valorSemSimbolo = val.replace(/R\$\s*/g, '');
   const valorFloat = parseFloat(valorSemSimbolo);
@@ -146,57 +154,82 @@ export default {
     },
     
     analisar(){
-      let menorValor = {name: "a",
+      if(this.citySelected == "" || this.peso == 0){
+
+        const ov = document.getElementById("overlay");
+        ov.style.display = "block";
+      
+      }else{
+                      let menorValor = {name: "a",
                         cost_transport_light: "R$ 999.00",
                         cost_transport_heavy: "R$ 999.00",
                         city: "a",
                         lead_time: "999h"};
-      let menorTempo = {name: "a",
+                      let menorTempo = {name: "a",
                         cost_transport_light: "R$ 999.00",
                         cost_transport_heavy: "R$ 999.00",
                         city: "a",
                         lead_time: "999h"};
 
-      this.data.map(val=>{
+        this.data.map(val=>{
 
-        if(this.citySelected == val.city){
+          if(this.citySelected == val.city){
 
-          //verifica o menor preço baseado no peso
-          if(this.peso <= 100){
-            let value_light = convertFloat(val.cost_transport_light);
-            let menorVal_light = convertFloat(menorValor.cost_transport_light)
+            //verifica o menor preço baseado no peso
+            if(this.peso <= 100){
+              let value_light = convertFloat(val.cost_transport_light);
+              let menorVal_light = convertFloat(menorValor.cost_transport_light)
 
-            if(value_light < menorVal_light){
-              menorValor = val;
+              if(value_light < menorVal_light){
+                menorValor = val;
+              }
+
+            }else if(this.peso > 100){
+              let value_heavy = convertFloat(val.cost_transport_heavy);
+              let menorVal_heavy = convertFloat(menorValor.cost_transport_heavy)
+
+              if(value_heavy < menorVal_heavy){
+                menorValor = val;
+              }
+
             }
-
-          }else if(this.peso > 100){
-            let value_heavy = convertFloat(val.cost_transport_heavy);
-            let menorVal_heavy = convertFloat(menorValor.cost_transport_heavy)
-
-            if(value_heavy < menorVal_heavy){
-              menorValor = val;
+            
+            //Verifica o menor tempo
+            let valH = retiraH(val.lead_time);
+            let menorValH = retiraH(menorTempo.lead_time);
+            if(valH < menorValH){
+              menorTempo = val;
             }
 
           }
           
-          //Verifica o menor tempo
-          let valH = retiraH(val.lead_time);
-          let menorValH = retiraH(menorTempo.lead_time);
-          if(valH < menorValH){
-            menorTempo = val;
-          }
+        })
 
-        }
+        this.menorPreco = menorValor;
+        this.menorTempo = menorTempo;
+        this.showResponse = true;
+        document.getElementById("box-button-clear").style.display = "block";
+        document.getElementById("input-peso").disabled = true
+        document.getElementById("input-estado").disabled = true
+      }
         
-      })
-
-      this.menorPreco = menorValor;
-      this.menorTempo = menorTempo;
-
-      this.showResponse = true;
+    },
+    closeOverlay(){
+      const ov = document.getElementById("overlay");
+      ov.style.display = "none";
+    },
+    clearValues(){
+      this.menorPreco = {}
+      this.menorTempo = {}
+      this.peso = 0
+      this.citySelected = ""
+      this.showResponse = false
+      document.getElementById("box-button-clear").style.display = "none";
+      document.getElementById("input-peso").disabled = false
+      document.getElementById("input-estado").disabled = false
     }
   },
+  
 }
 </script>
 
@@ -234,6 +267,7 @@ export default {
 .content{
   padding: 30px 15px;
   display: flex;
+  flex-wrap: wrap;
 }
 
 .content-form{
@@ -281,20 +315,21 @@ select{
   border: none;
 }
 
-.content-form button, .msg-select button, .modal-box button{
-  padding: 5px 40px;
+.content-form button, .msg-select button, .modal-box button, .button-clear{
+  padding: 5px 60px;
   background-color: #00aca6;
   border: none;
   border-radius: 5px;
   font-weight: 700;
   transition: 0.7s;
 }
-.content-form button:hover, .msg-select button:hover, .modal-box button:hover{
+.content-form button:hover, .msg-select button:hover, .modal-box button:hover, .button-clear:hover{
   background-color: #06d4ce;
 }
 
 .response{
-  width: calc(70% - 30px);
+  width: 100%;
+  height: calc(100% - 40px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -348,5 +383,21 @@ select{
 
 .modal-box p{
   margin: 30px;
+}
+
+.box-button-clear{
+  display: none;
+  width: 100%;
+  height: 40px;
+}
+.button-clear{
+  float: right;
+  margin-right: 50px;
+}
+
+.box-response{
+  width: calc(70% - 30px);
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>
