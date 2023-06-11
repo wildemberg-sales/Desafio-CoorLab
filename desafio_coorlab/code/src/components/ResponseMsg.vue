@@ -17,10 +17,10 @@
 
         <div class="block-info-price">
             <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
-                R$ {{ precoFloatMenorValorLight * pesoFloat }}
+                R$ {{ parseFloat(precoFloatMenorValorLight * pesoFloat).toFixed(2) }}
             </p>
             <p v-else><span>Preço</span><br/>
-                R$ {{ precoFloatMenorValorHeavy * pesoFloat }}
+                R$ {{ parseFloat(precoFloatMenorValorHeavy * pesoFloat).toFixed(2) }}
             </p>
         </div>
 
@@ -41,10 +41,10 @@
 
         <div class="block-info-price">
             <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
-                R$ {{ precoFloatTempoLight * pesoFloat }}
+                R$ {{ parseFloat(precoFloatTempoLight * pesoFloat).toFixed(2) }}
             </p>
             <p v-else><span>Preço</span><br/>
-                R$ {{ precoFloatTempoHeavy * pesoFloat }}
+                R$ {{ parseFloat(precoFloatTempoHeavy * pesoFloat).toFixed(2) }}
             </p>
         </div>
         

@@ -22,13 +22,13 @@
           <div class="form-inputs">
 
             <label>Destino</label>
-              <select name="estado" id="input-estado" v-model="citySelected">
-                <option value="" default>Selecione o destino</option>
-                <option v-for="(obj) in cities" v-bind:key="obj.id" :value="obj">{{ obj }}</option>
-              </select>
+            <select name="estado" id="input-estado" v-model="citySelected">
+              <option value="" default>Selecione o destino</option>
+              <option v-for="(obj) in cities" v-bind:key="obj.id" :value="obj">{{ obj }}</option>
+            </select>
             
             <label for="input-peso">Peso</label>
-              <input type="number" placeholder="Peso da carga em Kg" id="input-peso" v-model="peso" min="0"/>
+            <input type="number" placeholder="Peso da carga em Kg" id="input-peso" v-model="peso" min="0"/>
             
           </div><!--form-inputs - bloco onde ficam os inputs-->
 
@@ -37,13 +37,14 @@
         </div><!--content-form - bloco onde fica o formulário-->
 
         <div class="box-response">
+
           <div class="response">
 
-          <div class="msg-select" v-if="showResponse" >
-            <ResponseMsg :preco="menorPreco" :tempo="menorTempo" :peso="peso"/>
-          </div><!--msg-select - mensagem de retorno quando os dados forem analisados-->
-        
-          <div class="msg-no-select" v-else>Nenhum dado selecionado</div><!--msg-no-select-->
+            <div class="msg-select" v-if="showResponse" >
+              <ResponseMsg :preco="menorPreco" :tempo="menorTempo" :peso="peso"/>
+            </div><!--msg-select - mensagem de retorno quando os dados forem analisados-->
+          
+            <div class="msg-no-select" v-else>Nenhum dado selecionado</div><!--msg-no-select-->
 
           </div><!--response - bloco de resposta-->
 
@@ -154,6 +155,7 @@ export default {
     },
     
     analisar(){
+      
       if(this.citySelected == "" || this.peso == 0){
 
         const ov = document.getElementById("overlay");
@@ -176,7 +178,7 @@ export default {
           if(this.citySelected == val.city){
 
             //verifica o menor preço baseado no peso
-            if(this.peso <= 100){
+            if(parseInt(this.peso) <= 100){
               let value_light = convertFloat(val.cost_transport_light);
               let menorVal_light = convertFloat(menorValor.cost_transport_light)
 
@@ -184,7 +186,7 @@ export default {
                 menorValor = val;
               }
 
-            }else if(this.peso > 100){
+            }else if(parseInt(this.peso) > 100){
               let value_heavy = convertFloat(val.cost_transport_heavy);
               let menorVal_heavy = convertFloat(menorValor.cost_transport_heavy)
 
