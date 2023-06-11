@@ -17,10 +17,10 @@
 
         <div class="block-info-price">
             <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
-                R$ {{ parseFloat(precoFloatMVL * pesoInt).toFixed(2)}}
+                R$ {{ precoFloatMenorValorLight * pesoFloat }}
             </p>
             <p v-else><span>Preço</span><br/>
-                R$ {{ parseFloat(precoFloatMVH * pesoInt).toFixed(2)}}
+                R$ {{ precoFloatMenorValorHeavy * pesoFloat }}
             </p>
         </div>
 
@@ -34,17 +34,17 @@
 
         <div class="block-info-data">
             <p><span><b>Frete mais rápido</b></span><br/>
-            Transportadora: {{tempo.name}} <br/>
+            Transportadora: {{ tempo.name }} <br/>
             Tempo estimado: {{ tempo.lead_time }} 
             </p>
         </div>
 
         <div class="block-info-price">
             <p v-if="parseInt(this.peso) < 101"><span>Preço</span><br/>
-                R$ {{ parseFloat(precoFloatTL * pesoInt).toFixed(2) }}
+                R$ {{ precoFloatTempoLight * pesoFloat }}
             </p>
             <p v-else><span>Preço</span><br/>
-                R$ {{ parseFloat(precoFloatTH * pesoInt).toFixed(2) }}
+                R$ {{ precoFloatTempoHeavy * pesoFloat }}
             </p>
         </div>
         
@@ -66,11 +66,11 @@
         },
         data(){
             return{
-                pesoInt: parseInt(this.peso),
-                precoFloatMVL: convertFloat(this.preco.cost_transport_light),
-                precoFloatMVH: convertFloat(this.preco.cost_transport_heavy),
-                precoFloatTL: convertFloat(this.tempo.cost_transport_light),
-                precoFloatTH: convertFloat(this.tempo.cost_transport_heavy)
+                pesoFloat: parseFloat(this.peso),
+                precoFloatMenorValorLight: convertFloat(this.preco.cost_transport_light),
+                precoFloatMenorValorHeavy: convertFloat(this.preco.cost_transport_heavy),
+                precoFloatTempoLight: convertFloat(this.tempo.cost_transport_light),
+                precoFloatTempoHeavy: convertFloat(this.tempo.cost_transport_heavy)
             }
         }
     }
